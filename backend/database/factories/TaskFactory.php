@@ -18,7 +18,6 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_id' => Project::factory(),
             'title' => fake()->sentence(4),
             'description' => fake()->optional()->paragraph(),
             'status' => fake()->randomElement(['todo', 'in_progress', 'done']),
