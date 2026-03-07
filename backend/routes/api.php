@@ -9,3 +9,4 @@ Route::get('/projects', [ProjectController::class, 'index']);
 Route::post('/projects', [ProjectController::class, 'store']);
 
 Route::get('/projects/{project}/tasks', [TaskController::class, 'index']);
+Route::post('/projects/{project}/tasks', [TaskController::class, 'store']);

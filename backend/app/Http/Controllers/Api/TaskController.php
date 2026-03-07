@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -25,5 +26,12 @@ class TaskController extends Controller
             ->paginate(10);
 
         return TaskResource::collection($tasks);
+    }
+
+    public function store(StoreTaskRequest $request, Project $project): TaskResource
+    {
+        $task = $project->tasks()->create($request->validated());
+
+        return new TaskResource($task);
     }
 }
