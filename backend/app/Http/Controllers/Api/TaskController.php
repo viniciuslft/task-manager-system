@@ -10,6 +10,7 @@ use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
@@ -42,5 +43,12 @@ class TaskController extends Controller
         $task->update($request->validated());
 
         return new TaskResource($task->fresh());
+    }
+
+    public function destroy(Task $task): Response
+    {
+        $task->delete();
+
+        return response()->noContent();
     }
 }
