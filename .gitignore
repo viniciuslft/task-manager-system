@@ -1,0 +1,10 @@
+/vendor
+/.idea
+/.vscode
+.env
+backend/.env
+frontend/.env
+backend/vendor
+frontend/node_modules
+backend/public/build
+frontend/dist
