@@ -24,6 +24,9 @@ class TaskController extends Controller
             ->when(
                 $request->filled('priority'),
                 fn ($query) => $query->where('priority', $request->string('priority'))
+            )->when(
+                $request->boolean('overdue'),
+                fn ($query) => $query->overdue()
             )
             ->latest()
             ->paginate(10);
