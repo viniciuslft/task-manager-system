@@ -60,4 +60,32 @@ class TaskManagerApiTest extends TestCase
             'priority' => 'high',
         ]);
     }
+
+    public function test_it_filters_tasks_by_status_and_priority(): void
+    {
+        $project = Project::factory()->create();
+
+        Task::factory()->create([
+            'project_id' => $project->id,
+            'title' => 'High priority todo task',
+            'status' => 'todo',
+            'priority' => 'high',
+        ]);
+
+        Task::factory()->create([
+            'project_id' => $project->id,
+            'title' => 'Medium priority done task',
+            'status' => 'done',
+            'priority' => 'medium',
+        ]);
+
+        $response = $this->getJson("/api/projects/{$project->id}/tasks?status=todo&priority=high");
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.title', 'High priority todo task')
+            ->assertJsonPath('data.0.status', 'todo')
+            ->assertJsonPath('data.0.priority', 'high');
+    }
 }
