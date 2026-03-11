@@ -5,7 +5,9 @@
       description="Manage your projects and track task progress."
     >
       <template #actions>
-        <BaseButton>New Project</BaseButton>
+        <BaseButton @click="isCreateProjectModalOpen = true">
+          New Project
+        </BaseButton>
       </template>
     </PageHeader>
 
@@ -34,6 +36,27 @@
         />
       </div>
     </section>
+
+    <BaseModal
+      :open="isCreateProjectModalOpen"
+      title="Create new project"
+      description="Add a new project to your workspace."
+      @close="isCreateProjectModalOpen = false"
+    >
+      <p class="text-sm text-slate-600 dark:text-slate-400">
+        Modal content placeholder
+      </p>
+
+      <template #actions>
+        <BaseButton variant="secondary" @click="isCreateProjectModalOpen = false">
+          Cancel
+        </BaseButton>
+
+        <BaseButton>
+          Create
+        </BaseButton>
+      </template>
+    </BaseModal>
   </AppShell>
 </template>
 
@@ -46,11 +69,13 @@ import LoadingState from '@/components/states/LoadingState.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
+import BaseModal from '@/components/base/BaseModal.vue'
 import { fetchProjects, type ProjectDto } from '@/services/projects'
 
 const projects = ref<ProjectDto[]>([])
 const loading = ref(false)
 const error = ref('')
+const isCreateProjectModalOpen = ref(false)
 
 async function loadProjects() {
   loading.value = true
