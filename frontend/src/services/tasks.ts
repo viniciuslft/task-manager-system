@@ -30,6 +30,11 @@ export interface CreateTaskPayload {
   due_date: string
 }
 
+export interface UpdateTaskPayload {
+  status?: 'todo' | 'in_progress' | 'done'
+  priority?: 'low' | 'medium' | 'high'
+}
+
 export async function fetchProjectTasks(projectId: number | string, filters?: TaskFilters) {
   const { data } = await api.get<PaginatedResponse<TaskDto>>(`/projects/${projectId}/tasks`, {
     params: filters,
@@ -40,5 +45,10 @@ export async function fetchProjectTasks(projectId: number | string, filters?: Ta
 
 export async function createTask(projectId: number | string, payload: CreateTaskPayload) {
   const { data } = await api.post<{ data: TaskDto }>(`/projects/${projectId}/tasks`, payload)
+  return data
+}
+
+export async function updateTask(taskId: number | string, payload: UpdateTaskPayload) {
+  const { data } = await api.patch<{ data: TaskDto }>(`/tasks/${taskId}`, payload)
   return data
 }

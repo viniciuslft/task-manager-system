@@ -17,13 +17,6 @@
       <div class="flex flex-col items-end gap-2">
         <span
           class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
-          :class="statusClasses"
-        >
-          {{ statusLabel }}
-        </span>
-
-        <span
-          class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
           :class="priorityClasses"
         >
           {{ priorityLabel }}
@@ -31,25 +24,41 @@
       </div>
     </div>
 
-    <div class="mt-4 flex items-center justify-between">
-      <p class="text-sm text-slate-500 dark:text-slate-400">
-        Due: {{ dueDateText }}
-      </p>
+    <div class="mt-4 grid gap-3 md:grid-cols-2">
+      <div>
+        <p class="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Status
+        </p>
 
-      <span
-        v-if="isOverdue"
-        class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700 dark:bg-red-950/40 dark:text-red-300"
-      >
-        Overdue
-      </span>
+        <BaseSelect
+          :model-value="status"
+          :options="statusOptions"
+          @update:model-value="handleStatusChange"
+        />
+      </div>
+
+      <div class="flex flex-col justify-end">
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          Due: {{ dueDateText }}
+        </p>
+
+        <span
+          v-if="isOverdue"
+          class="mt-2 inline-flex w-fit items-center rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700 dark:bg-red-950/40 dark:text-red-300"
+        >
+          Overdue
+        </span>
+      </div>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import BaseSelect from '@/components/base/BaseSelect.vue'
 
 interface Props {
+  id: number
   title: string
   description?: string
   status: 'todo' | 'in_progress' | 'done'
@@ -64,15 +73,15 @@ const props = withDefaults(defineProps<Props>(), {
   isOverdue: false,
 })
 
-const statusLabel = computed(() => {
-  const labels = {
-    todo: 'To do',
-    in_progress: 'In progress',
-    done: 'Done',
-  }
+const emit = defineEmits<{
+  'status-change': [payload: { id: number; status: 'todo' | 'in_progress' | 'done' }]
+}>()
 
-  return labels[props.status]
-})
+const statusOptions = [
+  { label: 'To do', value: 'todo' },
+  { label: 'In progress', value: 'in_progress' },
+  { label: 'Done', value: 'done' },
+]
 
 const priorityLabel = computed(() => {
   const labels = {
@@ -82,16 +91,6 @@ const priorityLabel = computed(() => {
   }
 
   return labels[props.priority]
-})
-
-const statusClasses = computed(() => {
-  const classes = {
-    todo: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-    in_progress: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
-    done: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
-  }
-
-  return classes[props.status]
 })
 
 const priorityClasses = computed(() => {
@@ -116,4 +115,11 @@ const dueDateText = computed(() => {
   if (!props.dueDate) return 'No due date'
   return props.dueDate
 })
+
+function handleStatusChange(value: string) {
+  emit('status-change', {
+    id: props.id,
+    status: value as 'todo' | 'in_progress' | 'done',
+  })
+}
 </script>

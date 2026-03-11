@@ -49,12 +49,14 @@
         <TaskCard
           v-for="task in tasks"
           :key="task.id"
+          :id="task.id"
           :title="task.title"
           :description="task.description ?? undefined"
           :status="task.status"
           :priority="task.priority"
           :due-date="task.due_date"
           :is-overdue="task.is_overdue ?? false"
+          @status-change="handleTaskStatusChange"
         />
       </div>
     </div>
@@ -81,7 +83,12 @@ import LoadingState from '@/components/states/LoadingState.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
-import { createTask, fetchProjectTasks, type TaskDto } from '@/services/tasks'
+import {
+  createTask,
+  fetchProjectTasks,
+  type TaskDto,
+  updateTask,
+} from '@/services/tasks'
 
 const route = useRoute()
 
@@ -137,6 +144,43 @@ async function handleTaskSubmit(payload: TaskFormPayload) {
     submitError.value = 'Failed to create task.'
   } finally {
     submitting.value = false
+  }
+}
+
+async function handleTaskStatusChange(payload: {
+  id: number
+  status: 'todo' | 'in_progress' | 'done'
+}) {
+  submitError.value = ''
+  successMessage.value = ''
+
+  const originalTasks = tasks.value.map((task) => ({ ...task }))
+  const taskIndex = tasks.value.findIndex((task) => task.id === payload.id)
+
+  if (taskIndex === -1) return
+
+  const currentTask = tasks.value[taskIndex]
+
+  tasks.value[taskIndex] = {
+    ...currentTask,
+    status: payload.status,
+    is_overdue:
+      currentTask.due_date
+        ? new Date(currentTask.due_date) < new Date(new Date().toDateString()) &&
+          payload.status !== 'done'
+        : false,
+  }
+
+  try {
+    await updateTask(payload.id, {
+      status: payload.status,
+    })
+
+    successMessage.value = 'Task status updated successfully.'
+  } catch (err) {
+    console.error('Failed to update task status:', err)
+    tasks.value = originalTasks
+    submitError.value = 'Failed to update task status.'
   }
 }
 
