@@ -1,0 +1,125 @@
+<template>
+  <article
+    class="rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow-md dark:bg-slate-950"
+    :class="containerClasses"
+  >
+    <div class="flex items-start justify-between gap-4">
+      <div class="space-y-1">
+        <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">
+          {{ title }}
+        </h3>
+
+        <p class="text-sm text-slate-600 dark:text-slate-400">
+          {{ description || 'No description provided.' }}
+        </p>
+      </div>
+
+      <div class="flex flex-col items-end gap-2">
+        <span
+          class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+          :class="priorityClasses"
+        >
+          {{ priorityLabel }}
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-4 grid gap-3 md:grid-cols-2">
+      <div>
+        <p class="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Status
+        </p>
+
+        <BaseSelect
+          :model-value="status"
+          :options="statusOptions"
+          @update:model-value="handleStatusChange"
+        />
+      </div>
+
+      <div class="flex flex-col justify-end">
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          Due: {{ dueDateText }}
+        </p>
+
+        <span
+          v-if="isOverdue"
+          class="mt-2 inline-flex w-fit items-center rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700 dark:bg-red-950/40 dark:text-red-300"
+        >
+          Overdue
+        </span>
+      </div>
+    </div>
+  </article>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import BaseSelect from '@/components/base/BaseSelect.vue'
+
+interface Props {
+  id: number
+  title: string
+  description?: string
+  status: 'todo' | 'in_progress' | 'done'
+  priority: 'low' | 'medium' | 'high'
+  dueDate?: string | null
+  isOverdue?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  description: '',
+  dueDate: null,
+  isOverdue: false,
+})
+
+const emit = defineEmits<{
+  'status-change': [payload: { id: number; status: 'todo' | 'in_progress' | 'done' }]
+}>()
+
+const statusOptions = [
+  { label: 'To do', value: 'todo' },
+  { label: 'In progress', value: 'in_progress' },
+  { label: 'Done', value: 'done' },
+]
+
+const priorityLabel = computed(() => {
+  const labels = {
+    low: 'Low',
+    medium: 'Medium',
+    high: 'High',
+  }
+
+  return labels[props.priority]
+})
+
+const priorityClasses = computed(() => {
+  const classes = {
+    low: 'bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300',
+    medium: 'bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300',
+    high: 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300',
+  }
+
+  return classes[props.priority]
+})
+
+const containerClasses = computed(() => {
+  if (props.isOverdue) {
+    return 'border-red-200 dark:border-red-900/50'
+  }
+
+  return 'border-slate-200 dark:border-slate-800'
+})
+
+const dueDateText = computed(() => {
+  if (!props.dueDate) return 'No due date'
+  return props.dueDate
+})
+
+function handleStatusChange(value: string) {
+  emit('status-change', {
+    id: props.id,
+    status: value as 'todo' | 'in_progress' | 'done',
+  })
+}
+</script>
