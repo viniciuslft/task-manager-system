@@ -1,13 +1,9 @@
 <template>
-  <div>
-    <AppHeader />
-
-    <main class="p-4">
-      <h1>Projects page</h1>
-    </main>
-  </div>
+  <AppShell>
+    <h1>Projects page</h1>
+  </AppShell>
 </template>
 
 <script setup lang="ts">
-import AppHeader from '@/components/layout/AppHeader.vue'
+import AppShell from '@/components/layout/AppShell.vue'
 </script>
