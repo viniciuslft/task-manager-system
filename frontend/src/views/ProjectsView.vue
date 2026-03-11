@@ -5,12 +5,7 @@
       description="Manage your projects and track task progress."
     >
       <template #actions>
-        <button
-          type="button"
-          class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-700"
-        >
-          New Project
-        </button>
+        <BaseButton>New Project</BaseButton>
       </template>
     </PageHeader>
 
@@ -50,6 +45,7 @@ import ProjectCard from '@/components/projects/ProjectCard.vue'
 import LoadingState from '@/components/states/LoadingState.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
 import { fetchProjects, type ProjectDto } from '@/services/projects'
 
 const projects = ref<ProjectDto[]>([])
