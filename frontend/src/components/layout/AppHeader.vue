@@ -33,12 +33,12 @@
 
         <button
           type="button"
-          class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+          class="group relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-gradient-to-br from-amber-50 to-white text-amber-500 shadow-sm transition duration-200 hover:border-amber-200 hover:from-amber-100 hover:to-white hover:text-amber-600 hover:shadow-md dark:border-slate-700 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:from-slate-800 dark:hover:to-slate-700 dark:hover:text-white"
           aria-label="Toggle theme"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
+            class="h-4 w-4 transition-transform duration-200 group-hover:rotate-12"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
