@@ -23,21 +23,23 @@
         {{ tasksCount }} tasks
       </p>
 
-      <button
-        type="button"
+      <RouterLink
+        :to="`/projects/${id}`"
         class="text-sm font-medium text-violet-600 transition hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
       >
         View details
-      </button>
+      </RouterLink>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import BaseBadge from '@/components/base/BaseBadge.vue'
 
 interface Props {
+  id: number
   name: string
   description?: string
   status: 'active' | 'archived'
