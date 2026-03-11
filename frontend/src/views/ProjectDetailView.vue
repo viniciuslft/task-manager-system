@@ -1,6 +1,10 @@
 <template>
   <AppShell>
     <div class="space-y-6">
+      <BackLink
+        to="/"
+        label="Back to projects"
+      />
       <div>
         <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
           Project details
@@ -84,6 +88,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
+import BackLink from '@/components/navigation/BackLink.vue'
 import TaskCard from '@/components/tasks/TaskCard.vue'
 import TaskFilters from '@/components/tasks/TaskFilters.vue'
 import TaskFormModal, {
