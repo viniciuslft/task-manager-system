@@ -84,6 +84,7 @@ import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
 import { useTasks } from '@/composables/useTasks'
+import { useDebounce } from '@/composables/useDebounce'
 
 const route = useRoute()
 const isCreateTaskModalOpen = ref(false)
@@ -102,6 +103,21 @@ const {
   resetFilters,
 } = useTasks(String(route.params.id))
 
+let filtersTimeout: ReturnType<typeof setTimeout> | null = null
+
+watch(
+  () => [filters.status, filters.priority],
+  () => {
+    if (filtersTimeout) {
+      clearTimeout(filtersTimeout)
+    }
+
+    filtersTimeout = setTimeout(() => {
+      loadTasks()
+    }, 400)
+  },
+)
+
 async function handleTaskSubmit(payload: TaskFormPayload) {
   const created = await createTask(payload)
 
@@ -109,13 +125,6 @@ async function handleTaskSubmit(payload: TaskFormPayload) {
     isCreateTaskModalOpen.value = false
   }
 }
-
-watch(
-  () => [filters.status, filters.priority],
-  () => {
-    loadTasks()
-  },
-)
 
 onMounted(() => {
   loadTasks()
