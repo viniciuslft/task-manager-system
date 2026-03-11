@@ -11,7 +11,19 @@
       </template>
     </PageHeader>
 
-    <section class="mt-6">
+    <section class="mt-6 space-y-4">
+      <FeedbackAlert
+        v-if="successMessage"
+        type="success"
+        :message="successMessage"
+      />
+
+      <FeedbackAlert
+        v-if="submitError"
+        type="error"
+        :message="submitError"
+      />
+
       <LoadingState v-if="loading" message="Loading projects..." />
 
       <ErrorState
@@ -39,6 +51,7 @@
 
     <ProjectFormModal
       :open="isCreateProjectModalOpen"
+      :submitting="submitting"
       @close="isCreateProjectModalOpen = false"
       @submit="handleProjectSubmit"
     />
@@ -50,16 +63,26 @@ import { onMounted, ref } from 'vue'
 import AppShell from '@/components/layout/AppShell.vue'
 import PageHeader from '@/components/shared/PageHeader.vue'
 import ProjectCard from '@/components/projects/ProjectCard.vue'
+import ProjectFormModal, {
+  type ProjectFormPayload,
+} from '@/components/projects/ProjectFormModal.vue'
 import LoadingState from '@/components/states/LoadingState.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
+import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
-import ProjectFormModal from '@/components/projects/ProjectFormModal.vue'
-import { fetchProjects, type ProjectDto } from '@/services/projects'
+import {
+  createProject,
+  fetchProjects,
+  type ProjectDto,
+} from '@/services/projects'
 
 const projects = ref<ProjectDto[]>([])
 const loading = ref(false)
 const error = ref('')
+const submitting = ref(false)
+const submitError = ref('')
+const successMessage = ref('')
 const isCreateProjectModalOpen = ref(false)
 
 async function loadProjects() {
@@ -77,13 +100,22 @@ async function loadProjects() {
   }
 }
 
-function handleProjectSubmit(payload: {
-  name: string
-  description: string
-  status: 'active' | 'archived'
-}) {
-  console.log('Project form submitted:', payload)
-  isCreateProjectModalOpen.value = false
+async function handleProjectSubmit(payload: ProjectFormPayload) {
+  submitting.value = true
+  submitError.value = ''
+  successMessage.value = ''
+
+  try {
+    await createProject(payload)
+    isCreateProjectModalOpen.value = false
+    successMessage.value = 'Project created successfully.'
+    await loadProjects()
+  } catch (err) {
+    console.error('Failed to create project:', err)
+    submitError.value = 'Failed to create project.'
+  } finally {
+    submitting.value = false
+  }
 }
 
 onMounted(() => {
