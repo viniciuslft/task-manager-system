@@ -28,7 +28,7 @@
 
       <ErrorState
         v-else-if="error"
-        message="Failed to load projects."
+        :message="error"
       />
 
       <EmptyState
@@ -71,50 +71,26 @@ import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
-import {
-  createProject,
-  fetchProjects,
-  type ProjectDto,
-} from '@/services/projects'
+import { useProjects } from '@/composables/useProjects'
 
-const projects = ref<ProjectDto[]>([])
-const loading = ref(false)
-const error = ref('')
-const submitting = ref(false)
-const submitError = ref('')
-const successMessage = ref('')
 const isCreateProjectModalOpen = ref(false)
 
-async function loadProjects() {
-  loading.value = true
-  error.value = ''
-
-  try {
-    const response = await fetchProjects()
-    projects.value = response.data
-  } catch (err) {
-    console.error('Failed to fetch projects:', err)
-    error.value = 'Failed to load projects.'
-  } finally {
-    loading.value = false
-  }
-}
+const {
+  projects,
+  loading,
+  error,
+  submitting,
+  submitError,
+  successMessage,
+  loadProjects,
+  createProject,
+} = useProjects()
 
 async function handleProjectSubmit(payload: ProjectFormPayload) {
-  submitting.value = true
-  submitError.value = ''
-  successMessage.value = ''
+  const created = await createProject(payload)
 
-  try {
-    await createProject(payload)
+  if (created) {
     isCreateProjectModalOpen.value = false
-    successMessage.value = 'Project created successfully.'
-    await loadProjects()
-  } catch (err) {
-    console.error('Failed to create project:', err)
-    submitError.value = 'Failed to create project.'
-  } finally {
-    submitting.value = false
   }
 }
 

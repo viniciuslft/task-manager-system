@@ -56,7 +56,7 @@
           :priority="task.priority"
           :due-date="task.due_date"
           :is-overdue="task.is_overdue ?? false"
-          @status-change="handleTaskStatusChange"
+          @status-change="updateTaskStatus"
         />
       </div>
     </div>
@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
 import TaskCard from '@/components/tasks/TaskCard.vue'
@@ -83,104 +83,30 @@ import LoadingState from '@/components/states/LoadingState.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
-import {
-  createTask,
-  fetchProjectTasks,
-  type TaskDto,
-  updateTask,
-} from '@/services/tasks'
+import { useTasks } from '@/composables/useTasks'
 
 const route = useRoute()
-
-const tasks = ref<TaskDto[]>([])
-const loading = ref(false)
-const error = ref('')
-const submitting = ref(false)
-const submitError = ref('')
-const successMessage = ref('')
 const isCreateTaskModalOpen = ref(false)
 
-const filters = reactive({
-  status: '',
-  priority: '',
-})
-
-async function loadTasks() {
-  loading.value = true
-  error.value = ''
-
-  try {
-    const response = await fetchProjectTasks(String(route.params.id), {
-      status: filters.status || undefined,
-      priority: filters.priority || undefined,
-    })
-
-    tasks.value = response.data
-  } catch (err) {
-    console.error('Failed to fetch tasks:', err)
-    error.value = 'Failed to load tasks.'
-  } finally {
-    loading.value = false
-  }
-}
-
-function resetFilters() {
-  filters.status = ''
-  filters.priority = ''
-}
+const {
+  tasks,
+  loading,
+  error,
+  submitting,
+  submitError,
+  successMessage,
+  filters,
+  loadTasks,
+  createTask,
+  updateTaskStatus,
+  resetFilters,
+} = useTasks(String(route.params.id))
 
 async function handleTaskSubmit(payload: TaskFormPayload) {
-  submitting.value = true
-  submitError.value = ''
-  successMessage.value = ''
+  const created = await createTask(payload)
 
-  try {
-    await createTask(String(route.params.id), payload)
+  if (created) {
     isCreateTaskModalOpen.value = false
-    successMessage.value = 'Task created successfully.'
-    await loadTasks()
-  } catch (err) {
-    console.error('Failed to create task:', err)
-    submitError.value = 'Failed to create task.'
-  } finally {
-    submitting.value = false
-  }
-}
-
-async function handleTaskStatusChange(payload: {
-  id: number
-  status: 'todo' | 'in_progress' | 'done'
-}) {
-  submitError.value = ''
-  successMessage.value = ''
-
-  const originalTasks = tasks.value.map((task) => ({ ...task }))
-  const taskIndex = tasks.value.findIndex((task) => task.id === payload.id)
-
-  if (taskIndex === -1) return
-
-  const currentTask = tasks.value[taskIndex]
-
-  tasks.value[taskIndex] = {
-    ...currentTask,
-    status: payload.status,
-    is_overdue:
-      currentTask.due_date
-        ? new Date(currentTask.due_date) < new Date(new Date().toDateString()) &&
-          payload.status !== 'done'
-        : false,
-  }
-
-  try {
-    await updateTask(payload.id, {
-      status: payload.status,
-    })
-
-    successMessage.value = 'Task status updated successfully.'
-  } catch (err) {
-    console.error('Failed to update task status:', err)
-    tasks.value = originalTasks
-    submitError.value = 'Failed to update task status.'
   }
 }
 
