@@ -1,6 +1,6 @@
 <template>
   <article
-    class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-950"
+    class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-950"
   >
     <div class="flex items-start justify-between gap-4">
       <div class="space-y-1">
@@ -13,12 +13,9 @@
         </p>
       </div>
 
-      <span
-        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
-        :class="statusClasses"
-      >
+      <BaseBadge :variant="statusVariant">
         {{ statusLabel }}
-      </span>
+      </BaseBadge>
     </div>
 
     <div class="mt-4 flex items-center justify-between">
@@ -38,6 +35,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import BaseBadge from '@/components/base/BaseBadge.vue'
 
 interface Props {
   name: string
@@ -49,15 +47,10 @@ interface Props {
 const props = defineProps<Props>()
 
 const statusLabel = computed(() => {
-  if (props.status === 'active') return 'Active'
-  return 'Archived'
+  return props.status === 'active' ? 'Active' : 'Archived'
 })
 
-const statusClasses = computed(() => {
-  if (props.status === 'active') {
-    return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
-  }
-
-  return 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+const statusVariant = computed(() => {
+  return props.status === 'active' ? 'success' : 'neutral'
 })
 </script>

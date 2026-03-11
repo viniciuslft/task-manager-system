@@ -1,6 +1,6 @@
 <template>
   <article
-    class="rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow-md dark:bg-slate-950"
+    class="rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-950"
     :class="containerClasses"
   >
     <div class="flex items-start justify-between gap-4">
@@ -15,12 +15,9 @@
       </div>
 
       <div class="flex flex-col items-end gap-2">
-        <span
-          class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
-          :class="priorityClasses"
-        >
+        <BaseBadge :variant="priorityVariant">
           {{ priorityLabel }}
-        </span>
+        </BaseBadge>
       </div>
     </div>
 
@@ -37,17 +34,24 @@
         />
       </div>
 
-      <div class="flex flex-col justify-end">
+      <div class="flex flex-col justify-end gap-2">
         <p class="text-sm text-slate-500 dark:text-slate-400">
           Due: {{ dueDateText }}
         </p>
 
-        <span
+        <BaseBadge
           v-if="isOverdue"
-          class="mt-2 inline-flex w-fit items-center rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700 dark:bg-red-950/40 dark:text-red-300"
+          variant="danger"
         >
           Overdue
-        </span>
+        </BaseBadge>
+
+        <BaseBadge
+          v-else
+          :variant="statusVariant"
+        >
+          {{ statusLabel }}
+        </BaseBadge>
       </div>
     </div>
   </article>
@@ -56,6 +60,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
+import BaseBadge from '@/components/base/BaseBadge.vue'
 
 interface Props {
   id: number
@@ -83,6 +88,16 @@ const statusOptions = [
   { label: 'Done', value: 'done' },
 ]
 
+const statusLabel = computed(() => {
+  const labels = {
+    todo: 'To do',
+    in_progress: 'In progress',
+    done: 'Done',
+  }
+
+  return labels[props.status]
+})
+
 const priorityLabel = computed(() => {
   const labels = {
     low: 'Low',
@@ -93,14 +108,24 @@ const priorityLabel = computed(() => {
   return labels[props.priority]
 })
 
-const priorityClasses = computed(() => {
-  const classes = {
-    low: 'bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300',
-    medium: 'bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300',
-    high: 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300',
-  }
+const statusVariant = computed(() => {
+  const variants = {
+    todo: 'neutral',
+    in_progress: 'warning',
+    done: 'success',
+  } as const
 
-  return classes[props.priority]
+  return variants[props.status]
+})
+
+const priorityVariant = computed(() => {
+  const variants = {
+    low: 'info',
+    medium: 'violet',
+    high: 'rose',
+  } as const
+
+  return variants[props.priority]
 })
 
 const containerClasses = computed(() => {
