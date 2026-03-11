@@ -20,32 +20,42 @@
         @create-task="isCreateTaskModalOpen = true"
       />
 
-      <FeedbackAlert
-        v-if="successMessage"
-        type="success"
-        :message="successMessage"
-      />
+      <FadeTransition name="fade-slide">
+        <FeedbackAlert
+          v-if="successMessage"
+          type="success"
+          :message="successMessage"
+        />
+      </FadeTransition>
 
-      <FeedbackAlert
-        v-if="submitError"
-        type="error"
-        :message="submitError"
-      />
+      <FadeTransition name="fade-slide">
+        <FeedbackAlert
+          v-if="submitError"
+          type="error"
+          :message="submitError"
+        />
+      </FadeTransition>
 
-      <LoadingState v-if="loading" message="Loading tasks..." />
+      <FadeTransition>
+        <LoadingState v-if="loading" message="Loading tasks..." />
+      </FadeTransition>
 
-      <ErrorState
-        v-else-if="error"
-        :message="error"
-      />
+      <FadeTransition>
+        <ErrorState
+          v-if="error"
+          :message="error"
+        />
+      </FadeTransition>
+      
+      <FadeTransition>
+        <EmptyState
+          v-if="!loading && !error && tasks.length === 0"
+          title="No tasks found"
+          message="Create the first task for this project."
+        />
+      </FadeTransition>
 
-      <EmptyState
-        v-else-if="tasks.length === 0"
-        title="No tasks found"
-        message="Create the first task for this project."
-      />
-
-      <div v-else class="grid gap-4 md:grid-cols-2">
+      <ListTransition v-if="!loading && !error && tasks.length > 0" class="grid gap-4 md:grid-cols-2">
         <TaskCard
           v-for="task in tasks"
           :key="task.id"
@@ -58,7 +68,7 @@
           :is-overdue="task.is_overdue ?? false"
           @status-change="updateTaskStatus"
         />
-      </div>
+      </ListTransition>
     </div>
 
     <TaskFormModal
@@ -84,6 +94,8 @@ import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
 import { useTasks } from '@/composables/useTasks'
+import FadeTransition from '@/components/transitions/FadeTransition.vue'
+import ListTransition from '@/components/transitions/ListTransition.vue'
 
 const route = useRoute()
 const isCreateTaskModalOpen = ref(false)
