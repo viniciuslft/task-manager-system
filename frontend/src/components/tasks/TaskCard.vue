@@ -1,6 +1,6 @@
 <template>
   <article
-    class="rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-950"
+    class="rounded-2xl border bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-950"
     :class="containerClasses"
   >
     <div class="flex items-start justify-between gap-4">
@@ -130,10 +130,10 @@ const priorityVariant = computed(() => {
 
 const containerClasses = computed(() => {
   if (props.isOverdue) {
-    return 'border-red-200 dark:border-red-900/50'
+    return 'border-red-200 hover:border-red-300 dark:border-red-900/50 dark:hover:border-red-800'
   }
 
-  return 'border-slate-200 dark:border-slate-800'
+  return 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
 })
 
 const dueDateText = computed(() => {
