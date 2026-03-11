@@ -3,7 +3,7 @@
     :open="open"
     title="Create new project"
     description="Add a new project to your workspace."
-    @close="$emit('close')"
+    @close="handleClose"
   >
     <form class="space-y-4" @submit.prevent="handleSubmit">
       <BaseInput
@@ -12,6 +12,10 @@
         label="Title"
         placeholder="Enter project title"
       />
+
+      <p v-if="errors.name" class="text-sm text-red-600 dark:text-red-400">
+        {{ errors.name }}
+      </p>
 
       <BaseTextarea
         id="project-description"
@@ -29,19 +33,19 @@
     </form>
 
     <template #actions>
-      <BaseButton variant="secondary" @click="$emit('close')">
+      <BaseButton variant="secondary" @click="handleClose">
         Cancel
       </BaseButton>
 
-      <BaseButton @click="handleSubmit">
-        Create
+      <BaseButton :disabled="submitting" @click="handleSubmit">
+        {{ submitting ? 'Creating...' : 'Create' }}
       </BaseButton>
     </template>
   </BaseModal>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
@@ -50,15 +54,18 @@ import BaseTextarea from '@/components/base/BaseTextarea.vue'
 
 interface Props {
   open: boolean
+  submitting?: boolean
 }
 
-interface ProjectFormPayload {
+export interface ProjectFormPayload {
   name: string
   description: string
   status: 'active' | 'archived'
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  submitting: false,
+})
 
 const emit = defineEmits<{
   close: []
@@ -71,16 +78,54 @@ const form = reactive<ProjectFormPayload>({
   status: 'active',
 })
 
+const errors = reactive({
+  name: '',
+})
+
 const statusOptions = [
   { label: 'Active', value: 'active' },
   { label: 'Archived', value: 'archived' },
 ] as const
 
+function resetForm() {
+  form.name = ''
+  form.description = ''
+  form.status = 'active'
+  errors.name = ''
+}
+
+function validateForm() {
+  errors.name = ''
+
+  if (!form.name.trim()) {
+    errors.name = 'Project title is required.'
+    return false
+  }
+
+  return true
+}
+
 function handleSubmit() {
+  if (!validateForm()) return
+
   emit('submit', {
-    name: form.name,
-    description: form.description,
+    name: form.name.trim(),
+    description: form.description.trim(),
     status: form.status,
   })
 }
+
+function handleClose() {
+  resetForm()
+  emit('close')
+}
+
+watch(
+  () => props.open,
+  (isOpen) => {
+    if (!isOpen) {
+      resetForm()
+    }
+  },
+)
 </script>
