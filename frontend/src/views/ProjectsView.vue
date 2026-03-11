@@ -40,6 +40,7 @@
     <ProjectFormModal
       :open="isCreateProjectModalOpen"
       @close="isCreateProjectModalOpen = false"
+      @submit="handleProjectSubmit"
     />
   </AppShell>
 </template>
@@ -74,6 +75,15 @@ async function loadProjects() {
   } finally {
     loading.value = false
   }
+}
+
+function handleProjectSubmit(payload: {
+  name: string
+  description: string
+  status: 'active' | 'archived'
+}) {
+  console.log('Project form submitted:', payload)
+  isCreateProjectModalOpen.value = false
 }
 
 onMounted(() => {
