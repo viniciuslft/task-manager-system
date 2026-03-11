@@ -17,7 +17,19 @@
         @update:status="filters.status = $event"
         @update:priority="filters.priority = $event"
         @reset="resetFilters"
-        @create-task="handleCreateTask"
+        @create-task="isCreateTaskModalOpen = true"
+      />
+
+      <FeedbackAlert
+        v-if="successMessage"
+        type="success"
+        :message="successMessage"
+      />
+
+      <FeedbackAlert
+        v-if="submitError"
+        type="error"
+        :message="submitError"
       />
 
       <LoadingState v-if="loading" message="Loading tasks..." />
@@ -46,6 +58,13 @@
         />
       </div>
     </div>
+
+    <TaskFormModal
+      :open="isCreateTaskModalOpen"
+      :submitting="submitting"
+      @close="isCreateTaskModalOpen = false"
+      @submit="handleTaskSubmit"
+    />
   </AppShell>
 </template>
 
@@ -55,16 +74,24 @@ import { useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
 import TaskCard from '@/components/tasks/TaskCard.vue'
 import TaskFilters from '@/components/tasks/TaskFilters.vue'
+import TaskFormModal, {
+  type TaskFormPayload,
+} from '@/components/tasks/TaskFormModal.vue'
 import LoadingState from '@/components/states/LoadingState.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
-import { fetchProjectTasks, type TaskDto } from '@/services/tasks'
+import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
+import { createTask, fetchProjectTasks, type TaskDto } from '@/services/tasks'
 
 const route = useRoute()
 
 const tasks = ref<TaskDto[]>([])
 const loading = ref(false)
 const error = ref('')
+const submitting = ref(false)
+const submitError = ref('')
+const successMessage = ref('')
+const isCreateTaskModalOpen = ref(false)
 
 const filters = reactive({
   status: '',
@@ -80,6 +107,7 @@ async function loadTasks() {
       status: filters.status || undefined,
       priority: filters.priority || undefined,
     })
+
     tasks.value = response.data
   } catch (err) {
     console.error('Failed to fetch tasks:', err)
@@ -94,8 +122,22 @@ function resetFilters() {
   filters.priority = ''
 }
 
-function handleCreateTask() {
-  console.log('Open task creation modal')
+async function handleTaskSubmit(payload: TaskFormPayload) {
+  submitting.value = true
+  submitError.value = ''
+  successMessage.value = ''
+
+  try {
+    await createTask(String(route.params.id), payload)
+    isCreateTaskModalOpen.value = false
+    successMessage.value = 'Task created successfully.'
+    await loadTasks()
+  } catch (err) {
+    console.error('Failed to create task:', err)
+    submitError.value = 'Failed to create task.'
+  } finally {
+    submitting.value = false
+  }
 }
 
 watch(
