@@ -11,6 +11,15 @@
         </p>
       </div>
 
+      <TaskFilters
+        :status="filters.status"
+        :priority="filters.priority"
+        @update:status="filters.status = $event"
+        @update:priority="filters.priority = $event"
+        @reset="resetFilters"
+        @create-task="handleCreateTask"
+      />
+
       <LoadingState v-if="loading" message="Loading tasks..." />
 
       <ErrorState
@@ -41,10 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
 import TaskCard from '@/components/tasks/TaskCard.vue'
+import TaskFilters from '@/components/tasks/TaskFilters.vue'
 import LoadingState from '@/components/states/LoadingState.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
@@ -55,6 +65,11 @@ const route = useRoute()
 const tasks = ref<TaskDto[]>([])
 const loading = ref(false)
 const error = ref('')
+
+const filters = reactive({
+  status: '',
+  priority: '',
+})
 
 async function loadTasks() {
   loading.value = true
@@ -69,6 +84,15 @@ async function loadTasks() {
   } finally {
     loading.value = false
   }
+}
+
+function resetFilters() {
+  filters.status = ''
+  filters.priority = ''
+}
+
+function handleCreateTask() {
+  console.log('Open task creation modal')
 }
 
 onMounted(() => {
