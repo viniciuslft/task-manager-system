@@ -70,12 +70,12 @@ export function useTasks(projectId: string) {
 
     if (taskIndex === -1) return false
 
-    const currentTask = tasks.value[taskIndex]
+    const currentTask = tasks.value[taskIndex]!
 
     tasks.value[taskIndex] = {
       ...currentTask,
       status: payload.status,
-      is_overdue: currentTask.due_date
+      is_overdue: currentTask?.due_date
         ? new Date(currentTask.due_date) < new Date(new Date().toDateString()) &&
           payload.status !== 'done'
         : false,
