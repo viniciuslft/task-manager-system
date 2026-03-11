@@ -16,31 +16,36 @@
 
     <section class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       <ProjectCard
-        name="Website Redesign"
-        description="Redesign the company website with a modern UI."
-        status="active"
-        :tasks-count="12"
-      />
-
-      <ProjectCard
-        name="Mobile App Launch"
-        description="Prepare launch tasks for the mobile application."
-        status="active"
-        :tasks-count="8"
-      />
-
-      <ProjectCard
-        name="Legacy Cleanup"
-        description="Archive and clean up old project assets."
-        status="archived"
-        :tasks-count="4"
+        v-for="project in projects"
+        :key="project.id"
+        :name="project.name"
+        :description="project.description ?? undefined"
+        :status="project.status"
+        :tasks-count="project.tasks_count"
       />
     </section>
   </AppShell>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import AppShell from '@/components/layout/AppShell.vue'
 import PageHeader from '@/components/shared/PageHeader.vue'
 import ProjectCard from '@/components/projects/ProjectCard.vue'
+import { fetchProjects, type ProjectDto } from '@/services/projects'
+
+const projects = ref<ProjectDto[]>([])
+
+async function loadProjects() {
+  try {
+    const response = await fetchProjects()
+    projects.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch projects:', error)
+  }
+}
+
+onMounted(() => {
+  loadProjects()
+})
 </script>
