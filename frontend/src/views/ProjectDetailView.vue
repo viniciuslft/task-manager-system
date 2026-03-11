@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
 import TaskCard from '@/components/tasks/TaskCard.vue'
@@ -76,7 +76,10 @@ async function loadTasks() {
   error.value = ''
 
   try {
-    const response = await fetchProjectTasks(String(route.params.id))
+    const response = await fetchProjectTasks(String(route.params.id), {
+      status: filters.status || undefined,
+      priority: filters.priority || undefined,
+    })
     tasks.value = response.data
   } catch (err) {
     console.error('Failed to fetch tasks:', err)
@@ -94,6 +97,13 @@ function resetFilters() {
 function handleCreateTask() {
   console.log('Open task creation modal')
 }
+
+watch(
+  () => [filters.status, filters.priority],
+  () => {
+    loadTasks()
+  },
+)
 
 onMounted(() => {
   loadTasks()
