@@ -5,6 +5,9 @@
         to="/"
         label="Back to projects"
       />
+      <div class="flex justify-end">
+        <ViewModeToggle v-model="taskViewMode" />
+      </div>
       <div>
         <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
           Project details
@@ -59,20 +62,33 @@
         />
       </FadeTransition>
 
-      <ListTransition v-if="!loading && !error && tasks.length > 0" class="grid gap-4 md:grid-cols-2">
-        <TaskCard
-          v-for="task in tasks"
-          :key="task.id"
-          :id="task.id"
-          :title="task.title"
-          :description="task.description ?? undefined"
-          :status="task.status"
-          :priority="task.priority"
-          :due-date="task.due_date"
-          :is-overdue="task.is_overdue ?? false"
+      <FadeTransition>
+        <div
+          v-if="!loading && !error && tasks.length > 0 && taskViewMode === 'cards'"
+          class="grid gap-4 md:grid-cols-2"
+        >
+          <TaskCard
+            v-for="task in tasks"
+            :key="task.id"
+            :id="task.id"
+            :title="task.title"
+            :description="task.description ?? undefined"
+            :status="task.status"
+            :priority="task.priority"
+            :due-date="task.due_date"
+            :is-overdue="task.is_overdue ?? false"
+            @status-change="updateTaskStatus"
+          />
+        </div>
+      </FadeTransition>
+
+      <FadeTransition>
+        <TasksTable
+          v-if="!loading && !error && tasks.length > 0 && taskViewMode === 'table'"
+          :tasks="tasks"
           @status-change="updateTaskStatus"
         />
-      </ListTransition>
+      </FadeTransition>
     </div>
 
     <TaskFormModal
@@ -100,7 +116,8 @@ import EmptyState from '@/components/states/EmptyState.vue'
 import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
 import { useTasks } from '@/composables/useTasks'
 import FadeTransition from '@/components/transitions/FadeTransition.vue'
-import ListTransition from '@/components/transitions/ListTransition.vue'
+import ViewModeToggle from '@/components/shared/ViewModeToggle.vue'
+import TasksTable from '@/components/tasks/TasksTable.vue'
 
 const route = useRoute()
 const isCreateTaskModalOpen = ref(false)
@@ -141,6 +158,8 @@ async function handleTaskSubmit(payload: TaskFormPayload) {
     isCreateTaskModalOpen.value = false
   }
 }
+
+const taskViewMode = ref<'cards' | 'table'>('cards')
 
 onMounted(() => {
   loadTasks()
