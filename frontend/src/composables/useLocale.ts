@@ -1,6 +1,12 @@
 import { computed } from 'vue'
 import { i18n, setAppLocale, SUPPORTED_LOCALES, type SupportedLocale } from '@/i18n'
 
+const LOCALE_DATE_MAP: Record<SupportedLocale, string> = {
+  en: 'en-US',
+  'pt-BR': 'pt-BR',
+  'pt-PT': 'pt-PT',
+}
+
 export function useLocale() {
   const locale = computed(() => i18n.global.locale.value as SupportedLocale)
 
@@ -16,10 +22,20 @@ export function useLocale() {
     setLocale(nextLocale)
   }
 
+  function formatDate(value: string | null | undefined) {
+    if (!value) return ''
+
+    const localeCode = LOCALE_DATE_MAP[locale.value]
+    const date = new Date(`${value}T00:00:00`)
+
+    return new Intl.DateTimeFormat(localeCode).format(date)
+  }
+
   return {
     locale,
     setLocale,
     toggleLocale,
     supportedLocales: SUPPORTED_LOCALES,
+    formatDate,
   }
 }

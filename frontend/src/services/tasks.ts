@@ -35,12 +35,22 @@ export interface UpdateTaskPayload {
   priority?: 'low' | 'medium' | 'high'
 }
 
+function normalizeTask(task: TaskDto): TaskDto {
+  return {
+    ...task,
+    due_date: task.due_date ? task.due_date.slice(0, 10) : null,
+  }
+}
+
 export async function fetchProjectTasks(projectId: number | string, filters?: TaskFilters) {
   const { data } = await api.get<PaginatedResponse<TaskDto>>(`/projects/${projectId}/tasks`, {
     params: filters,
   })
 
-  return data
+  return {
+    ...data,
+    data: data.data.map(normalizeTask),
+  }
 }
 
 export async function createTask(projectId: number | string, payload: CreateTaskPayload) {
