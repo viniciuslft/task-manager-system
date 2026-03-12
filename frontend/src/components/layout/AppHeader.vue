@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import LanguageSwitcherButton from '@/components/i18n/LanguageSwitcherButton.vue'
 import ThemeToggleButton from '@/components/theme/ThemeToggleButton.vue'
+import AppIcon from '@/components/layout/AppIcon.vue'
 
 const { t } = useI18n()
 </script>
@@ -12,11 +13,7 @@ const { t } = useI18n()
   >
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
       <div class="flex items-center gap-3">
-        <div
-          class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-600 text-sm font-bold text-white shadow-sm ring-1 ring-violet-500/20"
-        >
-          TM
-        </div>
+        <AppIcon />
 
         <div class="min-w-0">
           <p class="truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100">
