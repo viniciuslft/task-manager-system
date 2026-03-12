@@ -1,11 +1,11 @@
 <template>
   <div
-    class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950 md:flex-row md:items-end"
+    class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-950 md:flex-row md:items-end"
   >
     <div class="grid flex-1 gap-3 md:grid-cols-2">
       <BaseSelect
         id="task-status-filter"
-        label="Status"
+        :label="t('tasks.statusField')"
         :model-value="status"
         :options="statusOptions"
         @update:model-value="$emit('update:status', $event)"
@@ -13,7 +13,7 @@
 
       <BaseSelect
         id="task-priority-filter"
-        label="Priority"
+        :label="t('tasks.priorityField')"
         :model-value="priority"
         :options="priorityOptions"
         @update:model-value="$emit('update:priority', $event)"
@@ -22,17 +22,19 @@
 
     <div class="flex items-center gap-2">
       <BaseButton variant="secondary" @click="$emit('reset')">
-        Reset
+        {{ t('common.reset') }}
       </BaseButton>
 
       <BaseButton @click="$emit('create-task')">
-        New Task
+        {{ t('tasks.newTask') }}
       </BaseButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
 
@@ -50,17 +52,19 @@ defineEmits<{
   'create-task': []
 }>()
 
-const statusOptions = [
-  { label: 'All statuses', value: '' },
-  { label: 'To do', value: 'todo' },
-  { label: 'In progress', value: 'in_progress' },
-  { label: 'Done', value: 'done' },
-]
+const { t } = useI18n()
 
-const priorityOptions = [
-  { label: 'All priorities', value: '' },
-  { label: 'Low', value: 'low' },
-  { label: 'Medium', value: 'medium' },
-  { label: 'High', value: 'high' },
-]
+const statusOptions = computed(() => [
+  { label: t('tasks.allStatuses'), value: '' },
+  { label: t('tasks.todo'), value: 'todo' },
+  { label: t('tasks.inProgress'), value: 'in_progress' },
+  { label: t('tasks.done'), value: 'done' },
+])
+
+const priorityOptions = computed(() => [
+  { label: t('tasks.allPriorities'), value: '' },
+  { label: t('tasks.low'), value: 'low' },
+  { label: t('tasks.medium'), value: 'medium' },
+  { label: t('tasks.high'), value: 'high' },
+])
 </script>

@@ -1,6 +1,6 @@
 <template>
   <article
-    class="rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow-md dark:bg-slate-950"
+    class="rounded-2xl border bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-950"
     :class="containerClasses"
   >
     <div class="flex items-start justify-between gap-4">
@@ -10,24 +10,21 @@
         </h3>
 
         <p class="text-sm text-slate-600 dark:text-slate-400">
-          {{ description || 'No description provided.' }}
+          {{ description || t('common.noDescription') }}
         </p>
       </div>
 
       <div class="flex flex-col items-end gap-2">
-        <span
-          class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
-          :class="priorityClasses"
-        >
+        <BaseBadge :variant="priorityVariant">
           {{ priorityLabel }}
-        </span>
+        </BaseBadge>
       </div>
     </div>
 
     <div class="mt-4 grid gap-3 md:grid-cols-2">
       <div>
         <p class="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-          Status
+          {{ t('tasks.statusField') }}
         </p>
 
         <BaseSelect
@@ -37,17 +34,24 @@
         />
       </div>
 
-      <div class="flex flex-col justify-end">
+      <div class="flex flex-col justify-end gap-2">
         <p class="text-sm text-slate-500 dark:text-slate-400">
-          Due: {{ dueDateText }}
+          {{ t('tasks.dueDateLabel', { date: dueDateText }) }}
         </p>
 
-        <span
+        <BaseBadge
           v-if="isOverdue"
-          class="mt-2 inline-flex w-fit items-center rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700 dark:bg-red-950/40 dark:text-red-300"
+          variant="danger"
         >
-          Overdue
-        </span>
+          {{ t('tasks.overdue') }}
+        </BaseBadge>
+
+        <BaseBadge
+          v-else
+          :variant="statusVariant"
+        >
+          {{ statusLabel }}
+        </BaseBadge>
       </div>
     </div>
   </article>
@@ -55,7 +59,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BaseSelect from '@/components/base/BaseSelect.vue'
+import BaseBadge from '@/components/base/BaseBadge.vue'
 
 interface Props {
   id: number
@@ -77,42 +83,64 @@ const emit = defineEmits<{
   'status-change': [payload: { id: number; status: 'todo' | 'in_progress' | 'done' }]
 }>()
 
-const statusOptions = [
-  { label: 'To do', value: 'todo' },
-  { label: 'In progress', value: 'in_progress' },
-  { label: 'Done', value: 'done' },
-]
+const { t } = useI18n()
+
+const statusOptions = computed(() => [
+  { label: t('tasks.todo'), value: 'todo' },
+  { label: t('tasks.inProgress'), value: 'in_progress' },
+  { label: t('tasks.done'), value: 'done' },
+])
+
+const statusLabel = computed(() => {
+  const labels = {
+    todo: t('tasks.todo'),
+    in_progress: t('tasks.inProgress'),
+    done: t('tasks.done'),
+  }
+
+  return labels[props.status]
+})
 
 const priorityLabel = computed(() => {
   const labels = {
-    low: 'Low',
-    medium: 'Medium',
-    high: 'High',
+    low: t('tasks.low'),
+    medium: t('tasks.medium'),
+    high: t('tasks.high'),
   }
 
   return labels[props.priority]
 })
 
-const priorityClasses = computed(() => {
-  const classes = {
-    low: 'bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300',
-    medium: 'bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300',
-    high: 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300',
-  }
+const statusVariant = computed(() => {
+  const variants = {
+    todo: 'neutral',
+    in_progress: 'warning',
+    done: 'success',
+  } as const
 
-  return classes[props.priority]
+  return variants[props.status]
+})
+
+const priorityVariant = computed(() => {
+  const variants = {
+    low: 'info',
+    medium: 'violet',
+    high: 'rose',
+  } as const
+
+  return variants[props.priority]
 })
 
 const containerClasses = computed(() => {
   if (props.isOverdue) {
-    return 'border-red-200 dark:border-red-900/50'
+    return 'border-red-200 hover:border-red-300 dark:border-red-900/50 dark:hover:border-red-800'
   }
 
-  return 'border-slate-200 dark:border-slate-800'
+  return 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
 })
 
 const dueDateText = computed(() => {
-  if (!props.dueDate) return 'No due date'
+  if (!props.dueDate) return t('common.noDueDate')
   return props.dueDate
 })
 

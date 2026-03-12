@@ -1,16 +1,16 @@
 <template>
   <BaseModal
     :open="open"
-    title="Create new project"
-    description="Add a new project to your workspace."
+    :title="t('projects.createTitle')"
+    :description="t('projects.createDescription')"
     @close="handleClose"
   >
     <form class="space-y-4" @submit.prevent="handleSubmit">
       <BaseInput
         id="project-title"
         v-model="form.name"
-        label="Title"
-        placeholder="Enter project title"
+        :label="t('projects.titleField')"
+        :placeholder="t('projects.titlePlaceholder')"
       />
 
       <p v-if="errors.name" class="text-sm text-red-600 dark:text-red-400">
@@ -20,32 +20,33 @@
       <BaseTextarea
         id="project-description"
         v-model="form.description"
-        label="Description"
-        placeholder="Describe the project"
+        :label="t('projects.descriptionField')"
+        :placeholder="t('projects.descriptionPlaceholder')"
       />
 
       <BaseSelect
         id="project-status"
         v-model="form.status"
-        label="Status"
+        :label="t('projects.statusField')"
         :options="statusOptions"
       />
     </form>
 
     <template #actions>
       <BaseButton variant="secondary" @click="handleClose">
-        Cancel
+        {{ t('common.cancel') }}
       </BaseButton>
 
       <BaseButton :disabled="submitting" @click="handleSubmit">
-        {{ submitting ? 'Creating...' : 'Create' }}
+        {{ submitting ? t('common.creating') : t('common.create') }}
       </BaseButton>
     </template>
   </BaseModal>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
@@ -72,6 +73,8 @@ const emit = defineEmits<{
   submit: [payload: ProjectFormPayload]
 }>()
 
+const { t } = useI18n()
+
 const form = reactive<ProjectFormPayload>({
   name: '',
   description: '',
@@ -82,10 +85,10 @@ const errors = reactive({
   name: '',
 })
 
-const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Archived', value: 'archived' },
-] as const
+const statusOptions = computed(() => [
+  { label: t('projects.active'), value: 'active' },
+  { label: t('projects.archived'), value: 'archived' },
+])
 
 function resetForm() {
   form.name = ''
@@ -98,7 +101,7 @@ function validateForm() {
   errors.name = ''
 
   if (!form.name.trim()) {
-    errors.name = 'Project title is required.'
+    errors.name = t('projects.titleRequired')
     return false
   }
 

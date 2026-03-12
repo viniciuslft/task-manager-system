@@ -1,39 +1,37 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import LanguageSwitcherButton from '@/components/i18n/LanguageSwitcherButton.vue'
+import ThemeToggleButton from '@/components/theme/ThemeToggleButton.vue'
+
+const { t } = useI18n()
+</script>
+
 <template>
   <header
-    class="border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-950"
+    class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/90"
   >
-    <div class="mx-auto flex max-w-7xl items-center justify-between">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
       <div class="flex items-center gap-3">
         <div
-          class="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-bold text-white"
+          class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-600 text-sm font-bold text-white shadow-sm ring-1 ring-violet-500/20"
         >
           TM
         </div>
 
-        <div>
-          <h1 class="text-base font-semibold text-slate-900 dark:text-slate-100">
-            Task Manager
-          </h1>
+        <div class="min-w-0">
+          <p class="truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            {{ t('app.title') }}
+          </p>
+          <p class="truncate text-xs text-slate-500 dark:text-slate-400">
+            {{ t('app.subtitle') }}
+          </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <button
-          type="button"
-          class="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-        >
-          EN
-        </button>
-
-        <button
-          type="button"
-          class="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-        >
-          Theme
-        </button>
+      <div class="flex items-center gap-2">
+        <LanguageSwitcherButton />
+        <ThemeToggleButton />
       </div>
     </div>
   </header>
 </template>
-
-<script setup lang="ts"></script>
