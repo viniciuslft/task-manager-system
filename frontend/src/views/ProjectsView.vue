@@ -5,9 +5,12 @@
       description="Manage your projects and track task progress."
     >
       <template #actions>
-        <BaseButton @click="isCreateProjectModalOpen = true">
-          New Project
-        </BaseButton>
+        <div class="flex items-center gap-2">
+          <ViewModeToggle v-model="projectViewMode" />
+          <BaseButton @click="isCreateProjectModalOpen = true">
+            New Project
+          </BaseButton>
+        </div>
       </template>
     </PageHeader>
 
@@ -50,9 +53,9 @@
         />
       </FadeTransition>
       <FadeTransition>
-        <ListTransition
-          v-if="!loading && !error && projects.length > 0"
-          class-name="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+        <div
+          v-if="!loading && !error && projects.length > 0 && projectViewMode === 'cards'"
+          class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
         >
           <ProjectCard
             v-for="project in projects"
@@ -63,7 +66,14 @@
             :status="project.status"
             :tasks-count="project.tasks_count"
           />
-        </ListTransition>
+        </div>
+      </FadeTransition>
+
+      <FadeTransition>
+        <ProjectsTable
+          v-if="!loading && !error && projects.length > 0 && projectViewMode === 'table'"
+          :projects="projects"
+        />
       </FadeTransition>
     </section>
 
@@ -91,7 +101,8 @@ import FeedbackAlert from '@/components/states/FeedbackAlert.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import { useProjects } from '@/composables/useProjects'
 import FadeTransition from '@/components/transitions/FadeTransition.vue'
-import ListTransition from '@/components/transitions/ListTransition.vue'
+import ViewModeToggle from '@/components/shared/ViewModeToggle.vue'
+import ProjectsTable from '@/components/projects/ProjectsTable.vue'
 
 const isCreateProjectModalOpen = ref(false)
 
@@ -113,6 +124,8 @@ async function handleProjectSubmit(payload: ProjectFormPayload) {
     isCreateProjectModalOpen.value = false
   }
 }
+
+const projectViewMode = ref<'cards' | 'table'>('cards')
 
 onMounted(() => {
   loadProjects()
