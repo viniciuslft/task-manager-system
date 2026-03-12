@@ -52,7 +52,7 @@
             </td>
 
             <td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
-              {{ task.due_date || t('common.noDueDate') }}
+              {{ task.due_date ? formatDate(task.due_date) : t('common.noDueDate') }}
             </td>
 
             <td class="px-4 py-4">
@@ -75,6 +75,9 @@ import { useI18n } from 'vue-i18n'
 import BaseBadge from '@/components/base/BaseBadge.vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
 import type { TaskDto } from '@/services/tasks'
+import { useLocale } from '@/composables/useLocale'
+
+const { formatDate } = useLocale()
 
 interface Props {
   tasks: TaskDto[]

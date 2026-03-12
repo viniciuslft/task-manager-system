@@ -62,6 +62,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BaseSelect from '@/components/base/BaseSelect.vue'
 import BaseBadge from '@/components/base/BaseBadge.vue'
+import { useLocale } from '@/composables/useLocale'
 
 interface Props {
   id: number
@@ -139,9 +140,11 @@ const containerClasses = computed(() => {
   return 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
 })
 
+const { formatDate } = useLocale()
+
 const dueDateText = computed(() => {
   if (!props.dueDate) return t('common.noDueDate')
-  return props.dueDate
+  return formatDate(props.dueDate)
 })
 
 function handleStatusChange(value: string) {
