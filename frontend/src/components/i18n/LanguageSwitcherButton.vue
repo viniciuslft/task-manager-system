@@ -5,7 +5,7 @@
   >
     <button
       type="button"
-      class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+      class="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-100"
       :aria-label="t('common.language')"
       :aria-expanded="isOpen"
       aria-haspopup="listbox"
@@ -60,7 +60,7 @@
           >
             <button
               type="button"
-              class="flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800"
+              class="cursor-pointer flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800"
               :class="supportedLocale === locale
                 ? 'bg-slate-50 text-slate-900 dark:bg-slate-800 dark:text-slate-100'
                 : 'text-slate-700 dark:text-slate-200'"
