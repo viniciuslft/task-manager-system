@@ -1,4 +1,5 @@
 import { reactive, ref } from 'vue'
+import  { i18n } from '@/i18n'
 import {
   createTask as createTaskRequest,
   fetchProjectTasks,
@@ -20,6 +21,8 @@ export function useTasks(projectId: string) {
     priority: '',
   })
 
+  const t = i18n.global.t
+
   async function loadTasks() {
     loading.value = true
     error.value = ''
@@ -33,7 +36,7 @@ export function useTasks(projectId: string) {
       tasks.value = response.data
     } catch (err) {
       console.error('Failed to fetch tasks:', err)
-      error.value = 'Failed to load tasks.'
+      error.value = t('tasks.loadError')
     } finally {
       loading.value = false
     }
@@ -46,12 +49,12 @@ export function useTasks(projectId: string) {
 
     try {
       await createTaskRequest(projectId, payload)
-      successMessage.value = 'Task created successfully.'
+      successMessage.value = t('tasks.createdSuccess')
       await loadTasks()
       return true
     } catch (err) {
       console.error('Failed to create task:', err)
-      submitError.value = 'Failed to create task.'
+      submitError.value = t('tasks.createdError')
       return false
     } finally {
       submitting.value = false
@@ -86,12 +89,12 @@ export function useTasks(projectId: string) {
         status: payload.status,
       })
 
-      successMessage.value = 'Task status updated successfully.'
+      successMessage.value = t('tasks.updateSuccess')
       return true
     } catch (err) {
       console.error('Failed to update task status:', err)
       tasks.value = originalTasks
-      submitError.value = 'Failed to update task status.'
+      submitError.value = t('tasks.updateError')
       return false
     }
   }
