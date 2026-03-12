@@ -6,11 +6,13 @@ export default {
     back: 'Voltar',
     cancel: 'Cancelar',
     create: 'Criar',
+    creating: 'Criando...',
     reset: 'Limpar',
     cards: 'Cards',
     table: 'Tabela',
     noDueDate: 'Sem prazo',
     noDescription: 'Nenhuma descrição informada.',
+    loading: 'Carregando...',
   },
   app: {
     title: 'Task Manager',
@@ -37,6 +39,7 @@ export default {
     loadError: 'Falha ao carregar projetos.',
     viewDetails: 'Ver detalhes',
     backToProjects: 'Voltar para projetos',
+    titleRequired: 'O título do projeto é obrigatório.',
   },
   tasks: {
     title: 'Detalhes do projeto',
@@ -67,9 +70,21 @@ export default {
     medium: 'Média',
     high: 'Alta',
     loading: 'Carregando tarefas...',
+    allStatuses: 'Todos os status',
+    allPriorities: 'Todas as prioridades',
+    titleRequired: 'O título da tarefa é obrigatório.',
   },
   feedback: {
     somethingWentWrong: 'Algo deu errado',
     loadingProjects: 'Carregando projetos...',
+  },
+  table: {
+    name: 'Nome',
+    title: 'Título',
+    status: 'Status',
+    priority: 'Prioridade',
+    dueDate: 'Prazo',
+    tasks: 'Tarefas',
+    actions: 'Ações',
   },
 } as const

@@ -6,11 +6,13 @@ export default {
     back: 'Back',
     cancel: 'Cancel',
     create: 'Create',
+    creating: 'Creating...',
     reset: 'Reset',
     cards: 'Cards',
     table: 'Table',
     noDueDate: 'No due date',
     noDescription: 'No description provided.',
+    loading: 'Loading...',
   },
   app: {
     title: 'Task Manager',
@@ -37,6 +39,7 @@ export default {
     loadError: 'Failed to load projects.',
     viewDetails: 'View details',
     backToProjects: 'Back to projects',
+    titleRequired: 'Project title is required.',
   },
   tasks: {
     title: 'Project details',
@@ -67,9 +70,21 @@ export default {
     medium: 'Medium',
     high: 'High',
     loading: 'Loading tasks...',
+    allStatuses: 'All statuses',
+    allPriorities: 'All priorities',
+    titleRequired: 'Task title is required.',
   },
   feedback: {
     somethingWentWrong: 'Something went wrong',
     loadingProjects: 'Loading projects...',
+  },
+  table: {
+    name: 'Name',
+    title: 'Title',
+    status: 'Status',
+    priority: 'Priority',
+    dueDate: 'Due date',
+    tasks: 'Tasks',
+    actions: 'Actions',
   },
 } as const

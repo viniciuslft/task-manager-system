@@ -1,14 +1,14 @@
 <template>
   <AppShell>
     <PageHeader
-      title="Projects"
-      description="Manage your projects and track task progress."
+      :title="t('projects.title')"
+      :description="t('projects.description')"
     >
       <template #actions>
         <div class="flex items-center gap-2">
           <ViewModeToggle v-model="projectViewMode" />
           <BaseButton @click="isCreateProjectModalOpen = true">
-            New Project
+            {{ t('projects.newProject') }}
           </BaseButton>
         </div>
       </template>
@@ -34,7 +34,7 @@
       <FadeTransition>
         <LoadingState
           v-if="loading"
-          message="Loading projects..."
+          :message="t('feedback.loadingProjects')"
         />
       </FadeTransition>
 
@@ -48,10 +48,11 @@
       <FadeTransition>
         <EmptyState
           v-if="!loading && !error && projects.length === 0"
-          title="No projects found"
-          message="Create your first project to get started."
+          :title="t('projects.noProjectsTitle')"
+          :message="t('projects.noProjectsMessage')"
         />
       </FadeTransition>
+
       <FadeTransition>
         <div
           v-if="!loading && !error && projects.length > 0 && projectViewMode === 'cards'"
@@ -88,6 +89,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AppShell from '@/components/layout/AppShell.vue'
 import PageHeader from '@/components/shared/PageHeader.vue'
 import ProjectCard from '@/components/projects/ProjectCard.vue'
@@ -103,6 +105,8 @@ import { useProjects } from '@/composables/useProjects'
 import FadeTransition from '@/components/transitions/FadeTransition.vue'
 import ViewModeToggle from '@/components/shared/ViewModeToggle.vue'
 import ProjectsTable from '@/components/projects/ProjectsTable.vue'
+
+const { t } = useI18n()
 
 const isCreateProjectModalOpen = ref(false)
 

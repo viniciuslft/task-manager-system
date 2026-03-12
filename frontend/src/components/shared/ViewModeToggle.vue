@@ -10,7 +10,7 @@
         : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'"
       @click="$emit('update:modelValue', 'cards')"
     >
-      Cards
+      {{ t('common.cards') }}
     </button>
 
     <button
@@ -21,12 +21,14 @@
         : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'"
       @click="$emit('update:modelValue', 'table')"
     >
-      Table
+      {{ t('common.table') }}
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 interface Props {
   modelValue: 'cards' | 'table'
 }
@@ -36,4 +38,6 @@ defineProps<Props>()
 defineEmits<{
   'update:modelValue': [value: 'cards' | 'table']
 }>()
+
+const { t } = useI18n()
 </script>

@@ -18,7 +18,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  title: 'No data found',
-  message: 'There is nothing to display right now.',
+  title: '',
+  message: '',
 })
 </script>

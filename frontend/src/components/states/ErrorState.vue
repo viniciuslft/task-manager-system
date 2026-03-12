@@ -10,12 +10,16 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 interface Props {
   title?: string
   message: string
 }
 
+const { t } = useI18n()
+
 withDefaults(defineProps<Props>(), {
-  title: 'Something went wrong',
+  title: t('feedback.somethingWentWrong'),
 })
 </script>

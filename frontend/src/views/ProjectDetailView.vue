@@ -3,18 +3,18 @@
     <div class="space-y-6">
       <BackLink
         to="/"
-        label="Back to projects"
+        :label="t('projects.backToProjects')"
       />
       <div class="flex justify-end">
         <ViewModeToggle v-model="taskViewMode" />
       </div>
       <div>
         <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
-          Project details
+          {{ t('tasks.title') }}
         </h1>
 
         <p class="text-sm text-slate-600 dark:text-slate-400">
-          View project tasks and progress.
+          {{ t('tasks.description') }}
         </p>
       </div>
 
@@ -44,7 +44,7 @@
       </FadeTransition>
 
       <FadeTransition>
-        <LoadingState v-if="loading" message="Loading tasks..." />
+        <LoadingState v-if="loading" :message="t('tasks.loading')" />
       </FadeTransition>
 
       <FadeTransition>
@@ -57,8 +57,8 @@
       <FadeTransition>
         <EmptyState
           v-if="!loading && !error && tasks.length === 0"
-          title="No tasks found"
-          message="Create the first task for this project."
+          :title="t('tasks.noTasksTitle')"
+          :message="t('tasks.noTasksMessage')"
         />
       </FadeTransition>
 
@@ -103,6 +103,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import AppShell from '@/components/layout/AppShell.vue'
 import BackLink from '@/components/navigation/BackLink.vue'
 import TaskCard from '@/components/tasks/TaskCard.vue'
@@ -118,6 +119,8 @@ import { useTasks } from '@/composables/useTasks'
 import FadeTransition from '@/components/transitions/FadeTransition.vue'
 import ViewModeToggle from '@/components/shared/ViewModeToggle.vue'
 import TasksTable from '@/components/tasks/TasksTable.vue'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const isCreateTaskModalOpen = ref(false)

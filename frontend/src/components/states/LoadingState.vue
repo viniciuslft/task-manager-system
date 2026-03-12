@@ -6,17 +6,21 @@
       class="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-violet-600 dark:border-slate-700 dark:border-t-violet-400"
     />
     <p class="mt-4 text-sm text-slate-600 dark:text-slate-400">
-      {{ message }}
+      {{ resolvedMessage }}
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 interface Props {
   message?: string
 }
 
-withDefaults(defineProps<Props>(), {
-  message: 'Loading...',
-})
+const props = defineProps<Props>()
+const { t } = useI18n()
+
+const resolvedMessage = computed(() => props.message || t('common.loading'))
 </script>

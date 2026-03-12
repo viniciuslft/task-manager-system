@@ -10,7 +10,7 @@
         </h3>
 
         <p class="text-sm text-slate-600 dark:text-slate-400">
-          {{ description || 'No description provided.' }}
+          {{ description || t('common.noDescription') }}
         </p>
       </div>
 
@@ -24,7 +24,7 @@
     <div class="mt-4 grid gap-3 md:grid-cols-2">
       <div>
         <p class="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-          Status
+          {{ t('tasks.statusField') }}
         </p>
 
         <BaseSelect
@@ -36,14 +36,14 @@
 
       <div class="flex flex-col justify-end gap-2">
         <p class="text-sm text-slate-500 dark:text-slate-400">
-          Due: {{ dueDateText }}
+          {{ t('tasks.dueDateLabel', { date: dueDateText }) }}
         </p>
 
         <BaseBadge
           v-if="isOverdue"
           variant="danger"
         >
-          Overdue
+          {{ t('tasks.overdue') }}
         </BaseBadge>
 
         <BaseBadge
@@ -59,6 +59,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BaseSelect from '@/components/base/BaseSelect.vue'
 import BaseBadge from '@/components/base/BaseBadge.vue'
 
@@ -82,17 +83,19 @@ const emit = defineEmits<{
   'status-change': [payload: { id: number; status: 'todo' | 'in_progress' | 'done' }]
 }>()
 
-const statusOptions = [
-  { label: 'To do', value: 'todo' },
-  { label: 'In progress', value: 'in_progress' },
-  { label: 'Done', value: 'done' },
-]
+const { t } = useI18n()
+
+const statusOptions = computed(() => [
+  { label: t('tasks.todo'), value: 'todo' },
+  { label: t('tasks.inProgress'), value: 'in_progress' },
+  { label: t('tasks.done'), value: 'done' },
+])
 
 const statusLabel = computed(() => {
   const labels = {
-    todo: 'To do',
-    in_progress: 'In progress',
-    done: 'Done',
+    todo: t('tasks.todo'),
+    in_progress: t('tasks.inProgress'),
+    done: t('tasks.done'),
   }
 
   return labels[props.status]
@@ -100,9 +103,9 @@ const statusLabel = computed(() => {
 
 const priorityLabel = computed(() => {
   const labels = {
-    low: 'Low',
-    medium: 'Medium',
-    high: 'High',
+    low: t('tasks.low'),
+    medium: t('tasks.medium'),
+    high: t('tasks.high'),
   }
 
   return labels[props.priority]
@@ -137,7 +140,7 @@ const containerClasses = computed(() => {
 })
 
 const dueDateText = computed(() => {
-  if (!props.dueDate) return 'No due date'
+  if (!props.dueDate) return t('common.noDueDate')
   return props.dueDate
 })
 

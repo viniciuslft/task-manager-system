@@ -9,7 +9,7 @@
         </h3>
 
         <p class="text-sm text-slate-600 dark:text-slate-400">
-          {{ description || 'No description provided.' }}
+          {{ description || t('common.noDescription') }}
         </p>
       </div>
 
@@ -20,14 +20,14 @@
 
     <div class="mt-4 flex items-center justify-between">
       <p class="text-sm text-slate-500 dark:text-slate-400">
-        {{ tasksCount }} tasks
+        {{ t('projects.tasksCount', { count: tasksCount }) }}
       </p>
 
       <RouterLink
         :to="`/projects/${id}`"
         class="text-sm font-medium text-violet-600 transition hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
       >
-        View details
+        {{ t('projects.viewDetails') }}
       </RouterLink>
     </div>
   </article>
@@ -36,6 +36,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import BaseBadge from '@/components/base/BaseBadge.vue'
 
 interface Props {
@@ -47,9 +48,12 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { t } = useI18n()
 
 const statusLabel = computed(() => {
-  return props.status === 'active' ? 'Active' : 'Archived'
+  return props.status === 'active'
+    ? t('projects.active')
+    : t('projects.archived')
 })
 
 const statusVariant = computed(() => {

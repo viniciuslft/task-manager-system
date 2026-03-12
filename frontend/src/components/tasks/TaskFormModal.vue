@@ -1,16 +1,16 @@
 <template>
   <BaseModal
     :open="open"
-    title="Create new task"
-    description="Add a new task to this project."
+    :title="t('tasks.createTitle')"
+    :description="t('tasks.createDescription')"
     @close="handleClose"
   >
     <form class="space-y-4" @submit.prevent="handleSubmit">
       <BaseInput
         id="task-title"
         v-model="form.title"
-        label="Title"
-        placeholder="Enter task title"
+        :label="t('tasks.titleField')"
+        :placeholder="t('tasks.titlePlaceholder')"
       />
 
       <p v-if="errors.title" class="text-sm text-red-600 dark:text-red-400">
@@ -20,46 +20,47 @@
       <BaseTextarea
         id="task-description"
         v-model="form.description"
-        label="Description"
-        placeholder="Describe the task"
+        :label="t('tasks.descriptionField')"
+        :placeholder="t('tasks.descriptionPlaceholder')"
       />
 
       <BaseSelect
         id="task-status"
         v-model="form.status"
-        label="Status"
+        :label="t('tasks.statusField')"
         :options="statusOptions"
       />
 
       <BaseSelect
         id="task-priority"
         v-model="form.priority"
-        label="Priority"
+        :label="t('tasks.priorityField')"
         :options="priorityOptions"
       />
 
       <BaseInput
         id="task-due-date"
         v-model="form.due_date"
-        label="Due date"
+        :label="t('tasks.dueDateField')"
         type="date"
       />
     </form>
 
     <template #actions>
       <BaseButton variant="secondary" @click="handleClose">
-        Cancel
+        {{ t('common.cancel') }}
       </BaseButton>
 
       <BaseButton :disabled="submitting" @click="handleSubmit">
-        {{ submitting ? 'Creating...' : 'Create' }}
+        {{ submitting ? t('common.creating') : t('common.create') }}
       </BaseButton>
     </template>
   </BaseModal>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
@@ -88,6 +89,8 @@ const emit = defineEmits<{
   submit: [payload: TaskFormPayload]
 }>()
 
+const { t } = useI18n()
+
 const form = reactive<TaskFormPayload>({
   title: '',
   description: '',
@@ -100,17 +103,17 @@ const errors = reactive({
   title: '',
 })
 
-const statusOptions = [
-  { label: 'To do', value: 'todo' },
-  { label: 'In progress', value: 'in_progress' },
-  { label: 'Done', value: 'done' },
-] as const
+const statusOptions = computed(() => [
+  { label: t('tasks.todo'), value: 'todo' },
+  { label: t('tasks.inProgress'), value: 'in_progress' },
+  { label: t('tasks.done'), value: 'done' },
+])
 
-const priorityOptions = [
-  { label: 'Low', value: 'low' },
-  { label: 'Medium', value: 'medium' },
-  { label: 'High', value: 'high' },
-] as const
+const priorityOptions = computed(() => [
+  { label: t('tasks.low'), value: 'low' },
+  { label: t('tasks.medium'), value: 'medium' },
+  { label: t('tasks.high'), value: 'high' },
+])
 
 function resetForm() {
   form.title = ''
@@ -125,7 +128,7 @@ function validateForm() {
   errors.title = ''
 
   if (!form.title.trim()) {
-    errors.title = 'Task title is required.'
+    errors.title = t('tasks.titleRequired')
     return false
   }
 

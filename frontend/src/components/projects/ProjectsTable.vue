@@ -7,16 +7,16 @@
         <thead class="bg-slate-50 dark:bg-slate-900">
           <tr>
             <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              Name
+              {{ t('table.name') }}
             </th>
             <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              Status
+              {{ t('table.status') }}
             </th>
             <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              Tasks
+              {{ t('table.tasks') }}
             </th>
             <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              Actions
+              {{ t('table.actions') }}
             </th>
           </tr>
         </thead>
@@ -33,14 +33,14 @@
                   {{ project.name }}
                 </p>
                 <p class="text-sm text-slate-500 dark:text-slate-400">
-                  {{ project.description || 'No description provided.' }}
+                  {{ project.description || t('common.noDescription') }}
                 </p>
               </div>
             </td>
 
             <td class="px-4 py-4">
               <BaseBadge :variant="project.status === 'active' ? 'success' : 'neutral'">
-                {{ project.status === 'active' ? 'Active' : 'Archived' }}
+                {{ project.status === 'active' ? t('projects.active') : t('projects.archived') }}
               </BaseBadge>
             </td>
 
@@ -53,7 +53,7 @@
                 :to="`/projects/${project.id}`"
                 class="text-sm font-medium text-violet-600 transition hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
               >
-                View details
+                {{ t('projects.viewDetails') }}
               </RouterLink>
             </td>
           </tr>
@@ -65,6 +65,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import BaseBadge from '@/components/base/BaseBadge.vue'
 import type { ProjectDto } from '@/services/projects'
 
@@ -73,4 +74,6 @@ interface Props {
 }
 
 defineProps<Props>()
+
+const { t } = useI18n()
 </script>
