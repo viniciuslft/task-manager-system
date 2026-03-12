@@ -4,7 +4,7 @@
   >
     <button
       type="button"
-      class="rounded-lg px-3 py-1.5 text-sm font-medium transition"
+      class="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium transition"
       :class="modelValue === 'cards'
         ? 'bg-violet-600 text-white shadow-sm'
         : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'"
@@ -15,7 +15,7 @@
 
     <button
       type="button"
-      class="rounded-lg px-3 py-1.5 text-sm font-medium transition"
+      class="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium transition"
       :class="modelValue === 'table'
         ? 'bg-violet-600 text-white shadow-sm'
         : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'"

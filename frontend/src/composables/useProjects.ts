@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import  { i18n } from '@/i18n'
 import {
   createProject as createProjectRequest,
   fetchProjects,
@@ -14,6 +15,8 @@ export function useProjects() {
   const submitError = ref('')
   const successMessage = ref('')
 
+  const t = i18n.global.t
+
   async function loadProjects() {
     loading.value = true
     error.value = ''
@@ -23,7 +26,7 @@ export function useProjects() {
       projects.value = response.data
     } catch (err) {
       console.error('Failed to fetch projects:', err)
-      error.value = 'Failed to load projects.'
+      error.value = t('projects.loadError')
     } finally {
       loading.value = false
     }
@@ -36,12 +39,12 @@ export function useProjects() {
 
     try {
       await createProjectRequest(payload)
-      successMessage.value = 'Project created successfully.'
+      successMessage.value = t('projects.createdSuccess')
       await loadProjects()
       return true
     } catch (err) {
       console.error('Failed to create project:', err)
-      submitError.value = 'Failed to create project.'
+      submitError.value = t('projects.createdError')
       return false
     } finally {
       submitting.value = false
