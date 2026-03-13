@@ -1,5 +1,10 @@
 # Task Manager System
 
+🌍 Leia em:
+<a href="README.pt-BR.md"><img src="frontend/src/assets/flags/br.svg" alt="Português Brasil" width="18" /> Português (Brasil)</a>
+<a href="README.pt-PT.md"><img src="frontend/src/assets/flags/pt.svg" alt="Português Portugal" width="18" /> Português (Portugal)</a>
+<a href="README.en.md"><img src="frontend/src/assets/flags/us.svg" alt="English" width="18" /> English</a>
+
 <p align="center">
   <img src="frontend/src/assets/logo-mark.svg" alt="Task Manager System logo" width="140" />
 </p>
